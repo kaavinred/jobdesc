@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Description Merger</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h1 class="text-2xl font-semibold text-gray-800 mb-8 text-center">Job Description Merger</h1>
+            
+            <div class="flex flex-col lg:flex-row gap-6">
+                <!-- Left Panel -->
+                <div class="lg:w-1/2 space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Current Responsibilities</label>
+                        <textarea id="responsibilities" 
+                            class="w-full h-48 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                            placeholder="Enter existing responsibilities..."></textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Job Description</label>
+                        <textarea id="job_description" 
+                            class="w-full h-48 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                            placeholder="Enter job description..."></textarea>
+                    </div>
+
+                    <div class="flex items-center space-x-4">
+                        <label class="text-sm font-medium text-gray-700">Number of variations:</label>
+                        <select id="num_outputs" 
+                            class="border border-gray-300 rounded-md py-2 px-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3" selected>3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+
+                    <button onclick="shuffleJob()" 
+                        class="w-full bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                        Merge & Generate
+                    </button>
+                </div>
+
+                <!-- Right Panel -->
+                <div class="lg:w-1/2 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <label class="text-sm font-medium text-gray-700">Generated Output</label>
+                        <select id="variation-select" 
+                            class="border border-gray-300 rounded-md py-2 px-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            onchange="showVariation(this.value)">
+                            <option value="0">Variation 1</option>
+                        </select>
+                    </div>
+
+                    <div class="relative">
+                        <textarea id="output" 
+                            class="w-full h-96 p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none bg-gray-50 text-base leading-relaxed"
+                            readonly></textarea>
+                        <button onclick="copyOutput()" 
+                            class="absolute top-3 right-3 bg-white py-2 px-4 rounded border border-gray-300 hover:bg-gray-50 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm">
+                            Copy
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentVariations = [];
+
+        async function shuffleJob() {
+            const responsibilities = document.getElementById('responsibilities').value;
+            const job_description = document.getElementById('job_description').value;
+            const num_outputs = document.getElementById('num_outputs').value;
+
+            try {
+                const response = await fetch('/shuffle', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        responsibilities,
+                        job_description,
+                        num_outputs: parseInt(num_outputs)
+                    }),
+                });
+
+                const data = await response.json();
+                currentVariations = data.variations;
+                
+                const variationSelect = document.getElementById('variation-select');
+                variationSelect.innerHTML = currentVariations.map((_, index) => 
+                    `<option value="${index}">Variation ${index + 1}</option>`
+                ).join('');
+                
+                showVariation(0);
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('output').value = 'An error occurred while processing your request.';
+            }
+        }
+
+        function showVariation(index) {
+            if (currentVariations[index]) {
+                document.getElementById('output').value = currentVariations[index];
+            }
+        }
+
+        function copyOutput() {
+            const output = document.getElementById('output');
+            output.select();
+            document.execCommand('copy');
+            
+            const copyBtn = output.nextElementSibling;
+            copyBtn.textContent = 'Copied!';
+            setTimeout(() => {
+                copyBtn.textContent = 'Copy';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
