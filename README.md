@@ -49,41 +49,8 @@ job_merge_app/
 │   ├── index.html    # HTML template for the web app
 │── app.py            # Main Flask application
 │── requirements.txt  # Dependencies list
-│── runtime.txt       # Specifies Python version for deployment
 │── README.md         # Documentation
 ```
-
----
-
-## **🚀 Installation & Usage**
-### **🔹 Local Setup**
-To run this project locally, follow these steps:
-
-1️⃣ **Clone the repository**
-```bash
-git clone https://github.com/yourusername/job-description-merger.git
-cd job-description-merger
-```
-
-2️⃣ **Create a Virtual Environment (Optional but Recommended)**
-```bash
-python -m venv venv
-source venv/bin/activate  # On macOS/Linux
-venv\Scripts\activate  # On Windows
-```
-
-3️⃣ **Install Dependencies**
-```bash
-pip install -r requirements.txt
-```
-
-4️⃣ **Run the Application**
-```bash
-python app.py
-```
-The app will start at **http://127.0.0.1:5000/**.
-
----
 
 ## **📌 Technologies Used**
 - **Frontend:** HTML, CSS, JavaScript  
@@ -113,10 +80,3 @@ Feel free to reach out via GitHub issues or email me at **kaavinred@gmail.com**!
 
 ### **⭐ Don't forget to give this project a STAR if you found it useful! ⭐**
 ---
-
-This **README** provides:
-- A **detailed explanation** of the project.
-- A **clear step-by-step guide** for installation and deployment.
-- **Concise feature highlights** for an engaging GitHub presentation.
-
-Would you like me to add anything specific, such as **FAQs, advanced ATS tips, or additional NLP improvements**? 🚀
